@@ -1,44 +1,83 @@
-import { Link } from "expo-router";
 
+import ListHeading from "@/components/ListHeading";
+import SubscriptionCard from "@/components/SubscriptionCard";
+import UpcomingSubscriptionCard from "@/components/UpcomingSubscriptionCard";
+import { icons } from "@/constants/icons";
+import images from "@/constants/images";
+import { formatCurrency } from "@/lib/utils";
+import dayjs from "dayjs";
 import { styled } from "nativewind";
-import { Text } from "react-native";
+import { useState } from 'react';
+import { FlatList, Image, Text, View } from "react-native";
 import { SafeAreaView as RNSafeAreaView } from "react-native-safe-area-context";
-
+import { HOME_BALANCE, HOME_SUBSCRIPTIONS, HOME_USER, UPCOMING_SUBSCRIPTIONS } from "../../../constants/data";
 const SafeAreaView = styled(RNSafeAreaView);
 
 export default function App() {
+
+  const [expandedSubscriptionId, setExpandedSubscriptionId] = useState<String | null>(null)
+
   return (
     <SafeAreaView className="flex-1 bg-background p-5">
-      <Text className="text-xl font-bold text-blue-500">
-        Welcome to Nativewind!
-      </Text>
-      <Link href="/onboarding" asChild>
-        <Text className="mt-4 rounded bg-blue-500 p-4 text-white">
-          Go to onboarding
-        </Text>
-      </Link>
-      <Link href="/(auth)/sign-in" asChild>
-        <Text className="mt-4 rounded bg-blue-500 p-4 text-white">
-          Go to Sign in
-        </Text>
-      </Link>
-      <Link href="/(auth)/sign-up" asChild>
-        <Text className="mt-4 rounded bg-blue-500 p-4 text-white">
-          Go to Sign up
-        </Text>
-      </Link>
+      <FlatList
+        ListHeaderComponent={() => (
+          <>
+            <View className="home-header">
+              <View className="home-user">
+                <Image source={images.avatar} className="home-avatar" />
+                <Text className="home-user-name">{HOME_USER.name}</Text>
+              </View>
 
-      <Link href={{ pathname: "/subscriptions/[id]", params: { id: "spotify" } }}>
-        Spotify Subscription
-      </Link>
+              <Image source={icons.add} className="home-add-icon" />
+            </View>
 
-      <Link
-        href={{
-          pathname: "/subscriptions/[id]",
-          params: { id: "Claude" },
-        }}>
-        Claude Max Subscription
-      </Link>
+            <View className="home-balance-card">
+              <Text className="home-balance-label">Balance</Text>
+              <View className="home-balance-row">
+                <Text className="home-balance-amount">
+                  {formatCurrency(HOME_BALANCE.amount)}
+                </Text>
+                <Text className="home-balance-date">
+                  {dayjs(HOME_BALANCE.nextRenewalDate).format('MM/DD')}
+                </Text>
+              </View>
+            </View>
+
+            <View className="mb-5">
+              <ListHeading title="Upcoming" />
+              <FlatList
+                data={UPCOMING_SUBSCRIPTIONS}
+                keyExtractor={(item) => item.id}
+                renderItem={({ item }) => (
+                  <UpcomingSubscriptionCard
+                    {...item} />)}
+
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                ListEmptyComponent={<Text className="home-empty-state">No upcoming renewals yet.</Text>}
+              />
+            </View>
+            <ListHeading title="All Subscription" />
+
+          </>
+        )}
+        data={HOME_SUBSCRIPTIONS}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <SubscriptionCard
+            {...item}
+            expanded={expandedSubscriptionId === item.id}
+            onPress={() => setExpandedSubscriptionId((currentId) => (
+              (currentId === item.id ? null : item.id)
+            ))}
+
+          />
+        )}
+        ItemSeparatorComponent={() => <View className="h-4" />}
+        showsVerticalScrollIndicator={false}
+        ListEmptyComponent={<Text className="home-empty-state">No subscriptions yet.</Text>}
+        contentContainerClassName="pb-30"
+      />
     </SafeAreaView >
   );
 }
