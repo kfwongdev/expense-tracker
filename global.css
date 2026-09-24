@@ -239,7 +239,7 @@
     }
 
     .auth-content {
-        @apply grow px-5 pb-10 pt-8;
+        @apply grow px-4 pb-10 pt-8;
     }
 
     .auth-brand-block {
@@ -251,11 +251,7 @@
     }
 
     .auth-logo-mark {
-        @apply relative size-14 items-center justify-center rounded-2xl bg-accent;
-    }
-
-    .auth-logo-mark-text {
-        @apply text-2xl font-sans-extrabold text-background;
+        @apply size-14 rounded-2xl;
     }
 
     .auth-wordmark {
@@ -275,7 +271,7 @@
     }
 
     .auth-card {
-        @apply mt-8 rounded-3xl border border-border bg-card p-5;
+        @apply mt-8 rounded-3xl border border-border bg-card p-4;
     }
 
     .auth-form {
@@ -291,7 +287,7 @@
     }
 
     .auth-input {
-        @apply rounded-2xl border border-border bg-background px-4 py-4 text-base font-sans-medium text-primary;
+        @apply min-h-14 rounded-2xl border border-border bg-background px-4 py-3 text-[16px] font-sans-medium text-primary;
     }
 
     .auth-input-error {
@@ -304,6 +300,50 @@
 
     .auth-helper {
         @apply text-sm font-sans-medium text-muted-foreground;
+    }
+
+    .auth-input-row {
+        @apply relative justify-center;
+    }
+
+    .auth-input-with-toggle {
+        @apply pr-20;
+    }
+
+    .auth-input-toggle {
+        @apply absolute bottom-0 right-4 top-0 items-center justify-center;
+    }
+
+    .auth-input-toggle-text {
+        @apply text-xs font-sans-bold uppercase tracking-[0.5px] text-accent;
+    }
+
+    .auth-form-error {
+        @apply rounded-2xl bg-destructive/10 px-4 py-3 text-sm font-sans-semibold text-destructive;
+    }
+
+    .auth-code-input {
+        @apply rounded-2xl border border-border bg-background px-4 py-4 text-center text-2xl font-sans-bold text-primary tracking-[10px];
+    }
+
+    .auth-resend-row {
+        @apply mt-5 flex-row items-center justify-center gap-1;
+    }
+
+    .auth-resend-text {
+        @apply text-sm font-sans-bold text-accent;
+    }
+
+    .auth-resend-text-disabled {
+        @apply text-muted-foreground;
+    }
+
+    .auth-back-row {
+        @apply mt-3 items-center;
+    }
+
+    .auth-back-text {
+        @apply text-sm font-sans-semibold text-muted-foreground;
     }
 
     .auth-button {

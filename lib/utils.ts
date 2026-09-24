@@ -23,3 +23,31 @@ export const formatStatusLabel = (value?: string): string => {
   if (!value) return "Unknown";
   return value.charAt(0).toUpperCase() + value.slice(1);
 };
+
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+export const isValidEmail = (value: string): boolean => EMAIL_PATTERN.test(value.trim());
+
+export const MIN_PASSWORD_LENGTH = 8;
+
+export const PASSWORD_HINT = `Use at least ${MIN_PASSWORD_LENGTH} characters, including 1 uppercase letter.`;
+
+export const getPasswordError = (value: string): string | null => {
+  if (value.length < MIN_PASSWORD_LENGTH) {
+    return `Use at least ${MIN_PASSWORD_LENGTH} characters.`;
+  }
+  if (!/[A-Z]/.test(value)) {
+    return "Include at least 1 uppercase letter.";
+  }
+  return null;
+};
+
+export const getClerkErrorMessage = (error: unknown): string => {
+  const clerkError = error as { errors?: { longMessage?: string; message?: string }[]; message?: string } | null;
+  return (
+    clerkError?.errors?.[0]?.longMessage ??
+    clerkError?.errors?.[0]?.message ??
+    clerkError?.message ??
+    "Something went wrong. Please try again."
+  );
+};
