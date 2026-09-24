@@ -28,18 +28,10 @@ const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export const isValidEmail = (value: string): boolean => EMAIL_PATTERN.test(value.trim());
 
-export const MIN_PASSWORD_LENGTH = 8;
-
-export const PASSWORD_HINT = `Use at least ${MIN_PASSWORD_LENGTH} characters, including 1 uppercase letter.`;
-
-export const getPasswordError = (value: string): string | null => {
-  if (value.length < MIN_PASSWORD_LENGTH) {
-    return `Use at least ${MIN_PASSWORD_LENGTH} characters.`;
-  }
-  if (!/[A-Z]/.test(value)) {
-    return "Include at least 1 uppercase letter.";
-  }
-  return null;
+// Field-specific Clerk errors (e.g. password rules) are surfaced via `errors.fields`, so skip them at the form level.
+export const isClerkFieldError = (error: unknown): boolean => {
+  const clerkError = error as { errors?: { meta?: { paramName?: string } }[] } | null;
+  return Boolean(clerkError?.errors?.[0]?.meta?.paramName);
 };
 
 export const getClerkErrorMessage = (error: unknown): string => {

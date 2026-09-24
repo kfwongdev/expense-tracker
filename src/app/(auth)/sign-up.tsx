@@ -1,7 +1,7 @@
 import AuthButton from "@/components/auth/AuthButton";
 import AuthField from "@/components/auth/AuthField";
 import AuthHeader from "@/components/auth/AuthHeader";
-import { getClerkErrorMessage, getPasswordError, isValidEmail, PASSWORD_HINT } from "@/lib/utils";
+import { getClerkErrorMessage, isClerkFieldError, isValidEmail } from "@/lib/utils";
 import { useResendCooldown } from "@/lib/useResendCooldown";
 import { useSignUp } from "@clerk/expo";
 import { Link, useRouter } from "expo-router";
@@ -30,9 +30,7 @@ const SignUpScreen = () => {
         ? "Enter a valid email address."
         : errors.fields.emailAddress?.message;
 
-    const passwordError = password.length > 0
-        ? getPasswordError(password) ?? errors.fields.password?.message
-        : errors.fields.password?.message;
+    const passwordError = errors.fields.password?.message;
 
     const confirmPasswordError = confirmPassword.length > 0 && confirmPassword !== password
         ? "Passwords do not match."
@@ -41,7 +39,7 @@ const SignUpScreen = () => {
     const canSubmit = useMemo(
         () =>
             isValidEmail(emailAddress) &&
-            getPasswordError(password) === null &&
+            password.length > 0 &&
             confirmPassword === password &&
             !isSubmitting,
         [emailAddress, password, confirmPassword, isSubmitting]
@@ -65,7 +63,7 @@ const SignUpScreen = () => {
         try {
             const { error } = await signUp.password({ emailAddress: emailAddress.trim(), password });
             if (error) {
-                setFormError(getClerkErrorMessage(error));
+                if (!isClerkFieldError(error)) setFormError(getClerkErrorMessage(error));
                 return;
             }
 
@@ -169,10 +167,6 @@ const SignUpScreen = () => {
                                         textContentType="newPassword"
                                         error={passwordError}
                                     />
-                                    {!passwordError && (
-                                        <Text className="auth-helper">{PASSWORD_HINT}</Text>
-                                    )}
-
                                     <AuthField
                                         label="Confirm password"
                                         value={confirmPassword}
